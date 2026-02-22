@@ -1,0 +1,131 @@
+{
+  "_comment": "OpenClaw Swarm Config v4.0 — OAuth Haiku + Google Flash + OAuth Opus (Мудрец)",
+  "_version": "4.0.0",
+  "_date": "2026-02-23",
+  "_architecture": "OAuth Haiku (все агенты) + Google Flash (часовой) + OAuth Opus (мудрец, по запросу)",
+  "_cost": "Часовой: $0 (Google подписка). Все агенты: OAuth подписка (Haiku). Мудрец: OAuth подписка (Opus, редко).",
+
+  "gateway": {
+    "port": 18789,
+    "bind": "loopback",
+    "logging": {
+      "level": "warn"
+    }
+  },
+
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "oauth/claude-haiku-4-5"
+      },
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "memorySearch": {
+        "enabled": true,
+        "sources": ["memory"]
+      }
+    },
+    "list": {
+      "kai": {
+        "_tier": "oauth-router",
+        "_note": "Маршрутизатор — OAuth Haiku, подписка Claude. Реагирует на входящие сообщения.",
+        "workspace": "~/.openclaw/workspace",
+        "model": {
+          "primary": "oauth/claude-haiku-4-5"
+        },
+        "heartbeat": {
+          "every": "0"
+        },
+        "channels": ["telegram"]
+      },
+      "sentinel": {
+        "_tier": "google-free",
+        "_note": "Часовой — Google Gemini Flash, подписка Google. Обходит систему каждые 30 мин.",
+        "workspace": "~/.openclaw/agents/sentinel",
+        "model": {
+          "primary": "google/gemini-2.5-flash",
+          "fallback": "zai/glm-4.7-flash"
+        },
+        "heartbeat": {
+          "every": "30m"
+        }
+      },
+      "technologist": {
+        "_tier": "oauth-worker",
+        "_note": "ЧПУ-инженер — OAuth Haiku, подписка Claude. Только по запросу.",
+        "workspace": "~/.openclaw/agents/technologist",
+        "model": {
+          "primary": "oauth/claude-haiku-4-5"
+        },
+        "heartbeat": {
+          "every": "0"
+        }
+      },
+      "titan": {
+        "_tier": "oauth-worker",
+        "_note": "Трекер здоровья — OAuth Haiku, подписка Claude. Только по запросу.",
+        "workspace": "~/.openclaw/agents/titan",
+        "model": {
+          "primary": "oauth/claude-haiku-4-5"
+        },
+        "heartbeat": {
+          "every": "0"
+        }
+      },
+      "architect": {
+        "_tier": "oauth-worker",
+        "_note": "DevOps-инженер — OAuth Haiku, подписка Claude. Только по запросу.",
+        "workspace": "~/.openclaw/agents/architect",
+        "model": {
+          "primary": "oauth/claude-haiku-4-5"
+        },
+        "heartbeat": {
+          "every": "0"
+        }
+      },
+      "auditor": {
+        "_tier": "oauth-auditor",
+        "_note": "Контролёр — OAuth Haiku, подписка Claude. Аудит раз в 12ч.",
+        "workspace": "~/.openclaw/agents/auditor",
+        "model": {
+          "primary": "oauth/claude-haiku-4-5"
+        },
+        "heartbeat": {
+          "every": "720m"
+        }
+      },
+      "sage": {
+        "_tier": "oauth-opus",
+        "_note": "Мудрец — OAuth Opus, подписка Claude. Самый умный. ТОЛЬКО по разрешению Максима.",
+        "workspace": "~/.openclaw/agents/sage",
+        "model": {
+          "primary": "oauth/claude-opus-4-6"
+        },
+        "heartbeat": {
+          "every": "0"
+        }
+      }
+    }
+  },
+
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "token": "${TELEGRAM_BOT_TOKEN}"
+    }
+  },
+
+  "tools": {
+    "loopDetection": {
+      "enabled": true,
+      "detectors": ["genericRepeat", "knownPollNoProgress", "pingPong"]
+    }
+  },
+
+  "skills": {
+    "load": {
+      "extraDirs": []
+    }
+  }
+}
